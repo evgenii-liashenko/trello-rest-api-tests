@@ -20,13 +20,12 @@ import static org.hamcrest.Matchers.*;
 
 public class TrelloRestTests {
 
-    //CRUD Trello board tests
+    //Trello board tests
 
     @Test(dataProvider = "boardTestDataProvider", dataProviderClass = DataProviders.class)
     public void testBoardCreationAndReading(TrelloBoard boardToBeCreated) {
         //Sending a POST request with some test data
-        Response response =
-                trelloBoardRequestBuilder()
+        Response response = trelloBoardRequestBuilder()
                         .setMethod(Method.POST)
                         .setName(boardToBeCreated.getName())
                         .setDescription(boardToBeCreated.getDesc())
@@ -84,8 +83,38 @@ public class TrelloRestTests {
         }
     }
 
+    @Test(dataProvider = "boardTestDataProvider", dataProviderClass = DataProviders.class)
+    public void checkCorrectBoardPostResponse(TrelloBoard boardToBeCreated) {
+        trelloBoardRequestBuilder()
+                .setMethod(Method.POST)
+                .setName(boardToBeCreated.getName())
+                .setDescription(boardToBeCreated.getDesc())
+                .buildRequest()
+                .sendRequest()
+                .then()
+                .assertThat()
+                .spec(goodResponseSpecification());
+    }
+
+    @Test(dataProvider = "boardTestDataProvider", dataProviderClass = DataProviders.class)
+    public void checkIncorrectBoardPostResponse(TrelloBoard boardToBeCreated) {
+        trelloBoardRequestBuilder()
+                .setMethod(Method.POST)
+                //.setName(boardToBeCreated.getName())
+                .setDescription(boardToBeCreated.getDesc())
+                .buildRequest()
+                .sendRequest()
+                .then()
+                .assertThat()
+                .spec(badResponseSpecification())
+                .and()
+                .body(containsString("invalid value for name"));
+    }
+
+
 
     //Trello list tests
+
     @Test(dataProvider = "listTestDataProvider", dataProviderClass = DataProviders.class)
     public void testListCreation(TrelloList listData){
         String listName = listData.getName();
@@ -99,6 +128,58 @@ public class TrelloRestTests {
         TrelloList createdList = getListFromTrello(generatedListId);
 
         assertThat(createdList.getName(), equalTo(listName));
+    }
+
+    @Test
+    public void testListMoving(){
+        //Setting up boards
+        TrelloBoard firstBoard = new TrelloBoard();
+        firstBoard.setName("The board where Test List is created");
+        String firstBoardId = createBoardOnTrello(firstBoard);
+        TrelloBoard secondBoard = new TrelloBoard();
+        secondBoard.setName("The board Test List should be moved to");
+        String secondBoardId = createBoardOnTrello(secondBoard);
+
+        //Creating a list on the first board
+        String generatedListId = createListOnTrello("Test List", firstBoardId);
+
+        //Moving the list from the fist board to the second one
+        trelloListRequestBuilder()
+                .setMethod(Method.PUT)
+                .setListId(generatedListId)
+                .setBoardId(secondBoardId)
+                .buildRequest()
+                .sendRequest();
+
+        //Verifying that the list has moved to the second board
+        TrelloList movedList = getListFromTrello(generatedListId);
+        String boardWithMovedListId = movedList.getIdBoard();
+        assertThat(boardWithMovedListId, equalTo(secondBoardId));
+    }
+
+    @Test
+    public void testListModification(){
+        //List names
+        String initialName = "Test list";
+        String updatedName = "Renamed list";
+
+        //Creating a board and a list on it
+        TrelloBoard trelloBoard = new TrelloBoard();
+        trelloBoard.setName("Test board");
+        String generatedBoardId = createBoardOnTrello(trelloBoard);
+        String generatedListId = createListOnTrello(initialName, generatedBoardId);
+
+        //Renaming the list
+        trelloListRequestBuilder()
+                .setMethod(Method.PUT)
+                .setListId(generatedListId)
+                .setName(updatedName)
+                .buildRequest()
+                .sendRequest();
+
+        //Verifying that the list has been renamed
+        TrelloList renamedList = getListFromTrello(generatedListId);
+        assertThat(renamedList.getName(), equalTo(updatedName));
     }
 
 
@@ -121,9 +202,6 @@ public class TrelloRestTests {
                 .sendRequest();
         return makeListObject(response);
     }
-
-
-
 
 
     //Auxiliary board testing methods
@@ -170,6 +248,7 @@ public class TrelloRestTests {
 
 
     @AfterSuite
+    //@Test
     public void tearDown() {
         for (String boardId : getAllBoardIdsInTrello()) {
             deleteBoardFromTrello(boardId);
