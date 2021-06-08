@@ -1,4 +1,4 @@
-package core;
+package core.api;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -9,39 +9,26 @@ import java.util.Map;
 import beans.TrelloBoard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import core.AccessDataLoader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import org.apache.http.HttpStatus;
-
-import static constants.ConstantParameterValues.*;
-import static org.hamcrest.Matchers.lessThan;
 
 
-public class TrelloMembersService {
+import static constants.Parameters.*;
 
-    //API access constants
+
+public class TrelloMembersService extends BaseTrelloService {
+
+    //Endpoint URL
     public static final URI TRELLO_MEMBERS_URL = URI.create(AccessDataLoader.getApiData().getProperty(MEMBERS_URL));
-    public static final String TRELLO_CONSUMER_KEY = AccessDataLoader.getApiData().getProperty(CONSUMER_KEY);
-    public static final String TRELLO_ACCESS_TOKEN = AccessDataLoader.getApiData().getProperty(ACCESS_TOKEN);
-
-
-
-    //Request variables
-    private Method requestMethod;
-    private Map<String, String> pathParameters;
-    private Map<String, String> queryParameters;
 
     //Constructor
     public TrelloMembersService(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
-        this.requestMethod = requestMethod;
-        this.pathParameters = pathParameters;
-        this.queryParameters = queryParameters;
+        super(requestMethod, pathParameters, queryParameters);
     }
 
     //Builder implementation
@@ -89,7 +76,7 @@ public class TrelloMembersService {
             pathStr += "{" + key + "}/";
         }
         return RestAssured
-                .given(requestSpecificationTms()).log().all()
+                .given(requestSpecificationMs()).log().all()
                 .header("Authorization", "OAuth oauth_consumer_key=\"" + TRELLO_CONSUMER_KEY + "\", oauth_token=\"" + TRELLO_ACCESS_TOKEN + "\"")
                 .pathParams(pathParameters)
                 .queryParams(queryParameters)
@@ -104,25 +91,11 @@ public class TrelloMembersService {
 
 
     //Request and response specifications
-    public static RequestSpecification requestSpecificationTms() {
+    public static RequestSpecification requestSpecificationMs() {
         return new RequestSpecBuilder()
                 .setAccept(ContentType.JSON)
                 .setContentType(ContentType.JSON)
                 .setBaseUri(TRELLO_MEMBERS_URL)
-                .build();
-    }
-    public static ResponseSpecification goodResponseSpecification() {
-        return new ResponseSpecBuilder()
-                .expectContentType(ContentType.JSON)
-                .expectResponseTime(lessThan(10000L))
-                .expectStatusCode(HttpStatus.SC_OK)
-                .build();
-    }
-    public static ResponseSpecification badResponseSpecification() {
-        return new ResponseSpecBuilder()
-                .expectContentType(ContentType.TEXT)
-                .expectResponseTime(lessThan(10000L))
-                .expectStatusCode(HttpStatus.SC_BAD_REQUEST)
                 .build();
     }
 

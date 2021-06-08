@@ -1,4 +1,5 @@
 import beans.TrelloBoard;
+import beans.TrelloList;
 import core.DataProviders;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
@@ -8,22 +9,24 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static core.TrelloBoardsService.makeBoardObject;
-import static core.TrelloBoardsService.trelloRequestBuilder;
-import static core.TrelloMembersService.*;
+import static core.api.TrelloBoardsService.makeBoardObject;
+import static core.api.TrelloBoardsService.trelloBoardRequestBuilder;
+import static core.api.TrelloListService.makeListObject;
+import static core.api.TrelloListService.trelloListRequestBuilder;
+import static core.api.TrelloMembersService.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 
 public class TrelloRestTests {
 
-    //CRUD board tests
+    //CRUD Trello board tests
 
     @Test(dataProvider = "boardTestDataProvider", dataProviderClass = DataProviders.class)
     public void testBoardCreationAndReading(TrelloBoard boardToBeCreated) {
         //Sending a POST request with some test data
         Response response =
-                trelloRequestBuilder()
+                trelloBoardRequestBuilder()
                         .setMethod(Method.POST)
                         .setName(boardToBeCreated.getName())
                         .setDescription(boardToBeCreated.getDesc())
@@ -43,7 +46,7 @@ public class TrelloRestTests {
     public void testBoardModification(TrelloBoard boardToBeModified){
         //Creating a board
         Response postResponse =
-                trelloRequestBuilder()
+                trelloBoardRequestBuilder()
                         .setMethod(Method.POST)
                         .setName(boardToBeModified.getName())
                         .setDescription(boardToBeModified.getDesc())
@@ -55,7 +58,7 @@ public class TrelloRestTests {
         String newName = "Renamed board with random number " + Math.random();
         String newDescription = "Modified description with random number " + Math.random();
         Response putResponse =
-                trelloRequestBuilder()
+                trelloBoardRequestBuilder()
                         .setMethod(Method.PUT)
                         .setId(generatedId)
                         .setName(newName)
@@ -82,14 +85,50 @@ public class TrelloRestTests {
     }
 
 
+    //Trello list tests
+    @Test(dataProvider = "listTestDataProvider", dataProviderClass = DataProviders.class)
+    public void testListCreation(TrelloList listData){
+        String listName = listData.getName();
+        String boardName = "This board should contain a list named " + listName;
+
+        //Creating a new board and a list within it
+        TrelloBoard trelloBoard = new TrelloBoard();
+        trelloBoard.setName(boardName);
+        String generatedBoardId = createBoardOnTrello(trelloBoard);
+        String generatedListId = createListOnTrello(listName, generatedBoardId);
+        TrelloList createdList = getListFromTrello(generatedListId);
+
+        assertThat(createdList.getName(), equalTo(listName));
+    }
+
+
+
+    //Auxiliary list testing methods
+    public String createListOnTrello(String name, String boardId){
+        Response response = trelloListRequestBuilder()
+                .setMethod(Method.POST)
+                .setName(name)
+                .setBoardId(boardId)
+                .buildRequest()
+                .sendRequest();
+        String generatedId = makeListObject(response).getId();
+        return generatedId;
+    }
+    public TrelloList getListFromTrello(String listId){
+        Response response = trelloListRequestBuilder()
+                .setListId(listId)
+                .buildRequest()
+                .sendRequest();
+        return makeListObject(response);
+    }
 
 
 
 
-    //Auxiliary methods
+
+    //Auxiliary board testing methods
     public String createBoardOnTrello(TrelloBoard boardData) {
-        Response response =
-                trelloRequestBuilder()
+        Response response = trelloBoardRequestBuilder()
                         .setMethod(Method.POST)
                         .setName(boardData.getName())
                         .setDescription(boardData.getDesc())
@@ -99,15 +138,14 @@ public class TrelloRestTests {
         return generatedId;
     }
     public TrelloBoard getBoardFromTrello(String boardId) {        //String boardId
-        Response response =
-                trelloRequestBuilder()
+        Response response = trelloBoardRequestBuilder()
                         .setId(boardId)
                         .buildRequest()
                         .sendRequest();
         return makeBoardObject(response);
     }
     public void deleteBoardFromTrello(String boardId) {
-        trelloRequestBuilder()
+        trelloBoardRequestBuilder()
                 .setMethod(Method.DELETE)
                 .setId(boardId)
                 .buildRequest()
