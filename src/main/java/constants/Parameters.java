@@ -11,6 +11,7 @@ public class Parameters {
     public static final String LIST_ID = "id";
     public static final String LIST_NAME = "name";
     public static final String LIST_BOARD_ID = "idBoard";
+    public static final String LIST_IS_CLOSED = "closed";
 
 
     //Access-related values

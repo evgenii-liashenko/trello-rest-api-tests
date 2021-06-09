@@ -44,6 +44,11 @@ public class TrelloListService extends BaseTrelloService {
             return this;
         }
 
+        public TrelloListRequestBuilder setClosed(String isClosed){
+            queryParams.put(LIST_IS_CLOSED, isClosed);
+            return this;
+        }
+
         public TrelloListRequestBuilder setBoardId(String boardId){
             queryParams.put(LIST_BOARD_ID, boardId);
             return this;
@@ -83,7 +88,6 @@ public class TrelloListService extends BaseTrelloService {
     public static TrelloList makeListObject(Response response) {
         return new Gson().fromJson(response.asString().trim(), new TypeToken<TrelloList>() {}.getType());
     }
-
 
     //Request specification
     public static RequestSpecification requestSpecificationLs() {

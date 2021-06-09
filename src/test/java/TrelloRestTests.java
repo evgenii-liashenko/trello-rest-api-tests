@@ -1,9 +1,12 @@
 import beans.TrelloBoard;
+import beans.TrelloBoardStar;
 import beans.TrelloList;
 import core.DataProviders;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -11,11 +14,18 @@ import java.util.List;
 
 import static core.api.TrelloBoardsService.makeBoardObject;
 import static core.api.TrelloBoardsService.trelloBoardRequestBuilder;
+import static core.api.TrelloBoardsService.goodResponseSpecification;
+import static core.api.TrelloBoardsService.badResponseSpecification;
 import static core.api.TrelloListService.makeListObject;
 import static core.api.TrelloListService.trelloListRequestBuilder;
-import static core.api.TrelloMembersService.*;
+import static core.api.TrelloMembersService.trelloMembersRequestBuilder;
+import static core.api.TrelloMembersService.makeBoardStarObject;
+import static core.api.TrelloMembersService.makeBoardObjects;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.containsString;
 
 
 public class TrelloRestTests {
@@ -26,11 +36,11 @@ public class TrelloRestTests {
     public void testBoardCreationAndReading(TrelloBoard boardToBeCreated) {
         //Sending a POST request with some test data
         Response response = trelloBoardRequestBuilder()
-                        .setMethod(Method.POST)
-                        .setName(boardToBeCreated.getName())
-                        .setDescription(boardToBeCreated.getDesc())
-                        .buildRequest()
-                        .sendRequest();
+                .setMethod(Method.POST)
+                .setName(boardToBeCreated.getName())
+                .setDescription(boardToBeCreated.getDesc())
+                .buildRequest()
+                .sendRequest();
         String generatedId = makeBoardObject(response).getId();
 
         //Reading actual data from the created board with GET request
@@ -42,7 +52,7 @@ public class TrelloRestTests {
     }
 
     @Test(dataProvider = "boardTestDataProvider", dataProviderClass = DataProviders.class)
-    public void testBoardModification(TrelloBoard boardToBeModified){
+    public void testBoardModification(TrelloBoard boardToBeModified) {
         //Creating a board
         Response postResponse =
                 trelloBoardRequestBuilder()
@@ -112,11 +122,10 @@ public class TrelloRestTests {
     }
 
 
-
     //Trello list tests
 
     @Test(dataProvider = "listTestDataProvider", dataProviderClass = DataProviders.class)
-    public void testListCreation(TrelloList listData){
+    public void testListCreation(TrelloList listData) {
         String listName = listData.getName();
         String boardName = "This board should contain a list named " + listName;
 
@@ -131,7 +140,7 @@ public class TrelloRestTests {
     }
 
     @Test
-    public void testListMoving(){
+    public void testListMoving() {
         //Setting up boards
         TrelloBoard firstBoard = new TrelloBoard();
         firstBoard.setName("The board where Test List is created");
@@ -158,7 +167,7 @@ public class TrelloRestTests {
     }
 
     @Test
-    public void testListModification(){
+    public void testListRenaming() {
         //List names
         String initialName = "Test list";
         String updatedName = "Renamed list";
@@ -182,10 +191,56 @@ public class TrelloRestTests {
         assertThat(renamedList.getName(), equalTo(updatedName));
     }
 
+    @Test
+    public void testListArchiving() {
+        //Creating a board and a list on it
+        TrelloBoard trelloBoard = new TrelloBoard();
+        trelloBoard.setName("The board with an archived list");
+        String generatedBoardId = createBoardOnTrello(trelloBoard);
+        String generatedListId = createListOnTrello("The list to be archived", generatedBoardId);
+
+        //Archiving the list
+        trelloListRequestBuilder()
+                .setMethod(Method.PUT)
+                .setListId(generatedListId)
+                .setClosed("true")
+                .buildRequest()
+                .sendRequest();
+
+        //Verifying that the list has been archived
+        TrelloList testList = getListFromTrello(generatedListId);
+        assertThat(testList.getClosed(), equalTo(true));
+    }
+
+
+    //Trello members tests
+
+    @Test
+    public void testStarring() {
+        //Creating a board
+        TrelloBoard board = new TrelloBoard();
+        board.setName("The board to be starred");
+        String generatedBoardId = createBoardOnTrello(board);
+
+        //Starring a board
+        Response response = trelloMembersRequestBuilder()
+                .setMethod(Method.POST)
+                .setFirstPathSuffix("me")
+                .setSecondPathSuffix("boardStars")
+                .setBoardId(generatedBoardId)
+                .setPosition("top")
+                .buildRequest()
+                .sendRequest();
+
+        //Verifying response
+        TrelloBoardStar trelloBoardStar = makeBoardStarObject(response);
+        assertThat(trelloBoardStar.getIdBoard(), equalTo(generatedBoardId));
+    }
 
 
     //Auxiliary list testing methods
-    public String createListOnTrello(String name, String boardId){
+
+    public String createListOnTrello(String name, String boardId) {
         Response response = trelloListRequestBuilder()
                 .setMethod(Method.POST)
                 .setName(name)
@@ -195,7 +250,8 @@ public class TrelloRestTests {
         String generatedId = makeListObject(response).getId();
         return generatedId;
     }
-    public TrelloList getListFromTrello(String listId){
+
+    public TrelloList getListFromTrello(String listId) {
         Response response = trelloListRequestBuilder()
                 .setListId(listId)
                 .buildRequest()
@@ -205,23 +261,26 @@ public class TrelloRestTests {
 
 
     //Auxiliary board testing methods
+
     public String createBoardOnTrello(TrelloBoard boardData) {
         Response response = trelloBoardRequestBuilder()
-                        .setMethod(Method.POST)
-                        .setName(boardData.getName())
-                        .setDescription(boardData.getDesc())
-                        .buildRequest()
-                        .sendRequest();
+                .setMethod(Method.POST)
+                .setName(boardData.getName())
+                .setDescription(boardData.getDesc())
+                .buildRequest()
+                .sendRequest();
         String generatedId = makeBoardObject(response).getId();
         return generatedId;
     }
+
     public TrelloBoard getBoardFromTrello(String boardId) {        //String boardId
         Response response = trelloBoardRequestBuilder()
-                        .setId(boardId)
-                        .buildRequest()
-                        .sendRequest();
+                .setId(boardId)
+                .buildRequest()
+                .sendRequest();
         return makeBoardObject(response);
     }
+
     public void deleteBoardFromTrello(String boardId) {
         trelloBoardRequestBuilder()
                 .setMethod(Method.DELETE)
@@ -229,6 +288,7 @@ public class TrelloRestTests {
                 .buildRequest()
                 .sendRequest();
     }
+
     public List<String> getAllBoardIdsInTrello() {
         Response response = trelloMembersRequestBuilder()
                 .setFirstPathSuffix("me")
@@ -247,8 +307,7 @@ public class TrelloRestTests {
     }
 
 
-    @AfterSuite
-    //@Test
+    @AfterMethod
     public void tearDown() {
         for (String boardId : getAllBoardIdsInTrello()) {
             deleteBoardFromTrello(boardId);

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import beans.TrelloBoard;
+import beans.TrelloBoardStar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import core.AccessDataLoader;
@@ -53,6 +54,16 @@ public class TrelloMembersService extends BaseTrelloService {
             return this;
         }
 
+        public TrelloMembersRequestBuilder setBoardId(String boardId){
+            queryParams.put("idBoard", boardId);
+            return this;
+        }
+
+        public TrelloMembersRequestBuilder setPosition(String posinion){
+            queryParams.put("pos", posinion);
+            return this;
+        }
+
         public TrelloMembersRequestBuilder setField (String field){
             queryParams.put("fields", field);
             return this;
@@ -67,7 +78,6 @@ public class TrelloMembersService extends BaseTrelloService {
     public static TrelloMembersRequestBuilder trelloMembersRequestBuilder() {
         return new TrelloMembersRequestBuilder();
     }
-
 
     //API interaction
     public Response sendRequest() {
@@ -89,6 +99,10 @@ public class TrelloMembersService extends BaseTrelloService {
         return new Gson().fromJson(response.asString().trim(), new TypeToken<List<TrelloBoard>>() {}.getType());
     }
 
+    //Conversion of deserialized json from Response to TrelloBoardStar
+    public static TrelloBoardStar makeBoardStarObject(Response response){
+        return new Gson().fromJson(response.asString().trim(), new TypeToken<TrelloBoardStar>() {}.getType());
+    }
 
     //Request and response specifications
     public static RequestSpecification requestSpecificationMs() {

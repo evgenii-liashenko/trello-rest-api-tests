@@ -92,7 +92,6 @@ public class TrelloBoardsService extends BaseTrelloService{
         return new Gson().fromJson(response.asString().trim(), new TypeToken<TrelloBoard>() {}.getType());
     }
 
-
     //Request specification
     public static RequestSpecification requestSpecification() {
         return new RequestSpecBuilder()
