@@ -10,7 +10,7 @@ import beans.TrelloBoard;
 import beans.TrelloBoardStar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import core.AccessDataLoader;
+import utils.AccessDataLoader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -22,13 +22,13 @@ import io.restassured.specification.RequestSpecification;
 import static constants.Parameters.*;
 
 
-public class TrelloMembersService extends BaseTrelloService {
+public class TrelloMembersApi extends BaseTrelloApi {
 
     //Endpoint URL
     public static final URI TRELLO_MEMBERS_URL = URI.create(AccessDataLoader.getApiData().getProperty(MEMBERS_URL));
 
     //Constructor
-    public TrelloMembersService(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
+    public TrelloMembersApi(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
         super(requestMethod, pathParameters, queryParameters);
     }
 
@@ -69,8 +69,8 @@ public class TrelloMembersService extends BaseTrelloService {
             return this;
         }
 
-        public TrelloMembersService buildRequest() {
-            return new TrelloMembersService(requestMethod, pathParams, queryParams);
+        public TrelloMembersApi buildRequest() {
+            return new TrelloMembersApi(requestMethod, pathParams, queryParams);
         }
     }
 

@@ -23,9 +23,6 @@ public class TrelloList {
     @SerializedName("idBoard")
     @Expose
     private String idBoard;
-    @SerializedName("limits")
-    @Expose
-    private Limits limits;
 
     public String getId() {
         return id;
@@ -67,14 +64,6 @@ public class TrelloList {
         this.idBoard = idBoard;
     }
 
-    public Limits getLimits() {
-        return limits;
-    }
-
-    public void setLimits(Limits limits) {
-        this.limits = limits;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -99,10 +88,6 @@ public class TrelloList {
         sb.append('=');
         sb.append(((this.idBoard == null)?"<null>":this.idBoard));
         sb.append(',');
-        sb.append("limits");
-        sb.append('=');
-        sb.append(((this.limits == null)?"<null>":this.limits));
-        sb.append(',');
         if (sb.charAt((sb.length()- 1)) == ',') {
             sb.setCharAt((sb.length()- 1), ']');
         } else {
@@ -114,12 +99,11 @@ public class TrelloList {
     @Override
     public int hashCode() {
         int result = 1;
-        result = ((result* 31)+((this.idBoard == null)? 0 :this.idBoard.hashCode()));
-        result = ((result* 31)+((this.pos == null)? 0 :this.pos.hashCode()));
         result = ((result* 31)+((this.name == null)? 0 :this.name.hashCode()));
         result = ((result* 31)+((this.closed == null)? 0 :this.closed.hashCode()));
         result = ((result* 31)+((this.id == null)? 0 :this.id.hashCode()));
-        result = ((result* 31)+((this.limits == null)? 0 :this.limits.hashCode()));
+        result = ((result* 31)+((this.idBoard == null)? 0 :this.idBoard.hashCode()));
+        result = ((result* 31)+((this.pos == null)? 0 :this.pos.hashCode()));
         return result;
     }
 
@@ -132,7 +116,7 @@ public class TrelloList {
             return false;
         }
         TrelloList rhs = ((TrelloList) other);
-        return (((((((this.idBoard == rhs.idBoard)||((this.idBoard!= null)&&this.idBoard.equals(rhs.idBoard)))&&((this.pos == rhs.pos)||((this.pos!= null)&&this.pos.equals(rhs.pos))))&&((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name))))&&((this.closed == rhs.closed)||((this.closed!= null)&&this.closed.equals(rhs.closed))))&&((this.id == rhs.id)||((this.id!= null)&&this.id.equals(rhs.id))))&&((this.limits == rhs.limits)||((this.limits!= null)&&this.limits.equals(rhs.limits))));
+        return ((((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.closed == rhs.closed)||((this.closed!= null)&&this.closed.equals(rhs.closed))))&&((this.id == rhs.id)||((this.id!= null)&&this.id.equals(rhs.id))))&&((this.idBoard == rhs.idBoard)||((this.idBoard!= null)&&this.idBoard.equals(rhs.idBoard))))&&((this.pos == rhs.pos)||((this.pos!= null)&&this.pos.equals(rhs.pos))));
     }
 
 }

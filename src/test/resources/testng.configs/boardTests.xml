@@ -4,8 +4,6 @@
     <test verbose="2" preserve-order="true" name="Trello REST API test">
         <classes>
             <class name="BoardTests"></class>
-            <class name="ListTests"></class>
-            <class name="MembersTests"></class>
         </classes>
     </test>
 </suite>

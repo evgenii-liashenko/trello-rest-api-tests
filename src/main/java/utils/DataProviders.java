@@ -1,4 +1,4 @@
-package core;
+package utils;
 
 import beans.TrelloBoard;
 import beans.TrelloList;

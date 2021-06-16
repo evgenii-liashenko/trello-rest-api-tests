@@ -15,7 +15,6 @@
     "idMemberReferrer": null,
     "idPremOrgsAdmin": [],
     "initials": "EL",
-    "nonPublic": {},
     "nonPublicAvailable": true,
     "products": [],
     "url": "https://trello.com/evgeniiliashenko",
@@ -29,66 +28,10 @@
     "email": "evgenii_liashenko@epam.com",
     "gravatarHash": "aaeb9aac8f36268805ddb7ded8607f3b",
     "idBoards": [],
-    "idOrganizations": [
-        "60b4bc898ff6c486ee58c939"
-    ],
-    "idEnterprisesAdmin": [],
-    "loginTypes": [
-        "atlassian"
-    ],
-    "marketingOptIn": {
-        "optedIn": false,
-        "date": "2021-06-01T07:03:37.262Z"
-    },
-    "messagesDismissed": [
-        {
-            "_id": "60b4bc8a314e1a6b8c78b9a1",
-            "name": "team-join-cta-banner-60b4bc898ff6c486ee58c939",
-            "count": 3,
-            "lastDismissed": "2021-05-31T10:38:02.509Z"
-        }
-    ],
-    "oneTimeMessagesDismissed": [
-        "sent-possible-new-signup-event",
-        "60b4bc898ff6c486ee58c939-memberHomeScreenPromptFull",
-        "team-boards-join-link-banner-60b4bc898ff6c486ee58c939",
-        "close-menu-of-first-board",
-        "nusku.views-switcher-upsell-default-open",
-        "boards-page-template-picker",
-        "60b4bc898ff6c486ee58c939-boardMenuMoreCollectionsPromptFull",
-        "team-template-picker-60b4bc898ff6c486ee58c939"
-    ],
-    "prefs": {
-        "privacy": {
-            "fullName": "public",
-            "avatar": "public"
-        },
-        "sendSummaries": true,
-        "minutesBetweenSummaries": 60,
-        "minutesBeforeDeadlineToNotify": 1440,
-        "colorBlind": false,
-        "locale": "en-US"
-    },
     "trophies": [],
     "uploadedAvatarHash": null,
     "uploadedAvatarUrl": null,
     "premiumFeatures": [],
     "isAaMastered": true,
-    "ixUpdate": "1142",
-    "limits": {
-        "boards": {
-            "totalPerMember": {
-                "status": "ok",
-                "disableAt": 4500,
-                "warnAt": 4050
-            }
-        },
-        "orgs": {
-            "totalPerMember": {
-                "status": "ok",
-                "disableAt": 850,
-                "warnAt": 765
-            }
-        }
-    }
+    "ixUpdate": "1142"
 }

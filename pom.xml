@@ -109,12 +109,30 @@
 
     <profiles>
         <profile>
-            <id>hw9Tests</id>
+            <id>allTests</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <testng.suite.file>${testng.configs.path.hw9}/allTests.xml</testng.suite.file>
+            </properties>
+        </profile>
+        <profile>
+            <id>boardTests</id>
+            <properties>
+                <testng.suite.file>${testng.configs.path.hw9}/boardTests.xml</testng.suite.file>
+            </properties>
+        </profile>
+        <profile>
+            <id>listTests</id>
+            <properties>
+                <testng.suite.file>${testng.configs.path.hw9}/listTests.xml</testng.suite.file>
+            </properties>
+        </profile>
+        <profile>
+            <id>membersTests</id>
+            <properties>
+                <testng.suite.file>${testng.configs.path.hw9}/membersTests.xml</testng.suite.file>
             </properties>
         </profile>
     </profiles>

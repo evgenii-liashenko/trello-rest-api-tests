@@ -3,7 +3,7 @@ package core.api;
 import beans.TrelloList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import core.AccessDataLoader;
+import utils.AccessDataLoader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -18,13 +18,13 @@ import java.util.Map;
 
 import static constants.Parameters.*;
 
-public class TrelloListService extends BaseTrelloService {
+public class TrelloListApi extends BaseTrelloApi {
 
     //Endpoint URL
     public static final URI TRELLO_LIST_URL = URI.create(AccessDataLoader.getApiData().getProperty(LIST_URL));
 
     //Constructor
-    public TrelloListService(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
+    public TrelloListApi(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
         super(requestMethod, pathParameters, queryParameters);
     }
 
@@ -59,8 +59,8 @@ public class TrelloListService extends BaseTrelloService {
             return this;
         }
 
-        public TrelloListService buildRequest(){
-            return new TrelloListService(requestMethod, pathParams, queryParams);
+        public TrelloListApi buildRequest(){
+            return new TrelloListApi(requestMethod, pathParams, queryParams);
         }
     }
 

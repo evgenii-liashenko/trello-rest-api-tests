@@ -1,14 +1,28 @@
 package constants;
 
-public class TestData {
-    public static final String ENG_BOARD_NAME = "A board for testing";
-    public static final String RUS_BOARD_NAME = "Доска для тестирования";
+import utils.RandomStringGenerator;
 
-    public static final String ENG_BOARD_DESCRIPTION = "This board was created with REST Assured";
-    public static final String RUS_BOARD_DESCRIPTION = "Эта доска была создана с помощью REST Assured";
+import java.util.concurrent.ThreadLocalRandom;
+
+public class TestData {
+
+    private static int stringLength = generateNumberInRange(1, 20);
+    private static RandomStringGenerator generator = new RandomStringGenerator(stringLength);
+
+    public static final String ENG_BOARD_NAME = generator.nextString();
+    public static final String RUS_BOARD_NAME = generator.nextString();
+
+    public static final String ENG_BOARD_DESCRIPTION = generator.nextString();
+    public static final String RUS_BOARD_DESCRIPTION = generator.nextString();
 
     public static final Boolean OPEN_BOARD = false;
     public static final Boolean CLOSED_BOARD = true;
 
-    public static final String ENG_LIST_NAME = "Test list";
+    public static final String ENG_LIST_NAME = generator.nextString();
+
+
+    private static int generateNumberInRange(int min, int max){
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
 }
+

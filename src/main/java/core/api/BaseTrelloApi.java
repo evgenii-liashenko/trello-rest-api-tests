@@ -1,6 +1,6 @@
 package core.api;
 
-import core.AccessDataLoader;
+import utils.AccessDataLoader;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
@@ -13,7 +13,7 @@ import java.util.Map;
 import static constants.Parameters.*;
 import static org.hamcrest.Matchers.lessThan;
 
-public class BaseTrelloService {
+public class BaseTrelloApi {
     //API access constants
     public static final String TRELLO_CONSUMER_KEY = AccessDataLoader.getApiData().getProperty(CONSUMER_KEY);
     public static final String TRELLO_ACCESS_TOKEN = AccessDataLoader.getApiData().getProperty(ACCESS_TOKEN);
@@ -26,7 +26,7 @@ public class BaseTrelloService {
 
 
     //Constructor
-    public BaseTrelloService(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
+    public BaseTrelloApi(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
         this.requestMethod = requestMethod;
         this.pathParameters = pathParameters;
         this.queryParameters = queryParameters;

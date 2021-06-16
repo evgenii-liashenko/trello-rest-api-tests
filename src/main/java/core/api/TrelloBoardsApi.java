@@ -8,7 +8,7 @@ import java.util.Map;
 import beans.TrelloBoard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import core.AccessDataLoader;
+import utils.AccessDataLoader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -20,13 +20,13 @@ import io.restassured.specification.RequestSpecification;
 import static constants.Parameters.*;
 
 
-public class TrelloBoardsService extends BaseTrelloService{
+public class TrelloBoardsApi extends BaseTrelloApi {
 
     //Endpoint URL
     public static final URI TRELLO_BOARD_URL = URI.create(AccessDataLoader.getApiData().getProperty(BOARD_URL));
 
     //Constructor
-    public TrelloBoardsService(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
+    public TrelloBoardsApi(Method requestMethod, Map<String, String> pathParameters, Map<String, String> queryParameters) {
         super(requestMethod, pathParameters, queryParameters);
     }
 
@@ -62,8 +62,8 @@ public class TrelloBoardsService extends BaseTrelloService{
             return this;
         }
 
-        public TrelloBoardsService buildRequest() {
-            return new TrelloBoardsService(requestMethod, pathParams, queryParams);
+        public TrelloBoardsApi buildRequest() {
+            return new TrelloBoardsApi(requestMethod, pathParams, queryParams);
         }
     }
 
