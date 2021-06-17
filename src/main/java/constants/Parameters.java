@@ -7,6 +7,7 @@ public class Parameters {
     public static final String BOARD_DESCRIPTION = "desc";
     public static final String IS_CLOSED = "closed";
 
+
     //List params
     public static final String LIST_ID = "id";
     public static final String LIST_NAME = "name";
