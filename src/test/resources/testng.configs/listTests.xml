@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="HW9 Test Suite">
+    <test verbose="2" preserve-order="true" name="Trello REST API test">
+        <classes>
+            <class name="ListTests"></class>
+        </classes>
+    </test>
+</suite>
